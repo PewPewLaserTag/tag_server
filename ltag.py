@@ -31,8 +31,10 @@ def test_server():
 
 @APP.route('/scan')
 def scan_gun():
+    #/scan?id=123&color=red
     id = flask.request.args.get('id')
     color = flask.request.args.get('color')
+    socketio.emit("scan", {"id":id, "color":color})
     print(f'id:{id}, color:{color}')
     return id
 

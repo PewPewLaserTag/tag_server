@@ -16,12 +16,13 @@ import NewPlayerForm from '../pages/NewPlayer.js';
 import Players from '../pages/Players.js';
 
 var io = require('socket.io-client')
+var socket = io('http://localhost:5000');
+socket.emit('getPlayers',{})
 
 var Store = require('./datastores/dataStore')
 
 const useStyles = makeStyles({});
-var socket = io('http://localhost:5000');
-socket.emit('getPlayers',{})
+
 
 export default function Headeer() {
     const classes = useStyles();

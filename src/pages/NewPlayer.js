@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
@@ -8,6 +8,9 @@ import AvatarSelector from '../components/AvatarSelector';
 import IconAttribution from '../components/IconAttribution';
 
 var Store = require('../components/datastores/dataStore')
+
+var io = require('socket.io-client')
+var socket = io('http://localhost:5000');
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -34,7 +37,17 @@ function NewPlayerForm() {
         console.log("Click", "Removing Player")
         store.set('newPlayer')({"name":name, "avatar":selectedAvatar, "tag":tag})
     }
+    const handleScan = (scan) => {
+        setTag(scan['id'])
+    }
     
+    useEffect(()=>{
+        socket.on('scan',handleScan)
+        return ()=>{
+            socket.removeEventListener('scan',handleScan)
+        }
+    })
+
     console.log(name)
     return (
         <Container align="left">
