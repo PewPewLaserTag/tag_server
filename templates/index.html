@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang='en'>
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"
+     crossorigin="anonymous"></script>
+<script type="text/javascript" charset="utf-8">
+    var socket = io();
+    socket.on('connect', function () {
+        socket.emit('my event', { data: 'I\'m connected!' });
+        socket.emit('join',{data:"Just Joined"})
+    });
+    socket.on("My Response",function(data){
+        console.log(data)
+    })
+</script>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Hello world!</title>
+   <!--- <link type="text/css" rel="stylesheet" href="{{ url_for('static',
+              filename='hello.css')}}" /> --> 
+</head>
+
+<body>
+
+    It works!
+
+</body>
+
+</html>

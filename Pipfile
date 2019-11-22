@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+autopep8 = "*"
+
+[packages]
+flask = "*"
+eventlet = "*"
+pika = "*"
+kombu = "*"
+python-socketio = {extras = ["client"],version = "*"}
+flask-socketio = "*"
+websocket = "*"
+tinydb = "*"
+
+[requires]
+python_version = "3.7"

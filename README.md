@@ -1,3 +1,11 @@
+## Commands
+Building the Docker file
+
+`docker build -t laser_tag:latest .`
+
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
