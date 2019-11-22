@@ -42,9 +42,9 @@ function NewPlayerForm() {
     }
     
     useEffect(()=>{
-        socket.on('scan',handleScan)
+        socket.on('newScan',handleScan)
         return ()=>{
-            socket.removeEventListener('scan',handleScan)
+            socket.removeEventListener('newScan',handleScan)
         }
     })
 

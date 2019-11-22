@@ -4,7 +4,7 @@ from time import sleep
 import logging
 from tinydb import TinyDB, Query
 
-from PlayerManager import Players
+from PlayerManager import Players, PlayerDoesNotExistsError
 
 import eventlet
 eventlet.monkey_patch()
@@ -34,9 +34,16 @@ def scan_gun():
     #/scan?id=123&color=red
     id = flask.request.args.get('id')
     color = flask.request.args.get('color')
-    socketio.emit("scan", {"id":id, "color":color})
-    print(f'id:{id}, color:{color}')
+    try:
+        player = p.playerByTag(id)
+        socketio.emit("scan", player)
+    except PlayerDoesNotExistsError:
+        socketio.emit("newScan", {"id":id, "color":color})
     return id
+
+@socketio.on("getPlayer")
+def getPlayer(tag):
+    return p.playerByTag(tag)
 
 @socketio.on('message')
 def handle_message(message):
