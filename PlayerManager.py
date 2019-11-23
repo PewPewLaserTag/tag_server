@@ -21,13 +21,12 @@ class Players:
                 self.players.insert(newPlayer)
             return self.allPlayers()
     
-    def removePlayer(self, player):
+    def removePlayer(self, playerName):
         """Remove a player from the Database"""
-        if "name" in player.keys():
-            if self._player_exists(player['name'], player['tag']):
-                self.players.remove(self.Q.name == player['name'])
-            else:
-                raise PlayerDoesNotExistsError(player)
+        if "name" in playerName.keys():
+            player = self.playerByName(playerName)
+            print(player)
+            self.players.remove(self.Q.name == player['name'])
             
     def playerByTag(self, tag):
         """Find a player by their Blaster Tag"""
@@ -37,6 +36,14 @@ class Players:
         else: 
             raise PlayerDoesNotExistsError(tag)
 
+    def playerByName(self,name):
+        """Find a player by their name """
+        p = self.players.search(self.Q.name == name)
+        print(p)
+        if len(p) > 0:
+            return p[0]
+        else: 
+            raise PlayerDoesNotExistsError(name)
 
     def allPlayers(self):
         return self.players.all()

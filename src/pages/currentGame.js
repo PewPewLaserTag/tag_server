@@ -19,26 +19,49 @@ const useStyles = makeStyles(theme => ({
 function CurrentGame(props) {
     const classes = useStyles()
     const store = Store.useStore()
+
+    //Using tick to trigger a render update
+    const [tick, setTick] = useState(0)
     const players = store.get('players')
     const [outPlayers, setOutPlayers] = useState([])
-    console.log("outside",outPlayers)
     const handleScan = (scan) => {
+        scan['remainingTime'] = 120
+        scan['done'] = false
         outPlayers.push(scan)
         setOutPlayers(Array.from(outPlayers))
     }
 
     useEffect(() => {
         socket.on('scan', handleScan)
+        const interval = setInterval(() => {
+
+            for (const p of outPlayers) {
+
+                if (p.remainingTime >= 0) {
+                    p.remainingTime = p.remainingTime - 1
+                }
+                else {
+                    p.done = true
+                }
+            }
+            const outPlayersNew = outPlayers.filter((item)=>{
+                return item.done != true
+            })
+            setOutPlayers(outPlayersNew)
+            var t = tick
+            if(tick > 10)
+                t = 1
+            setTick(t+1)
+        }, 500)
         return () => {
             socket.removeEventListener('scan', handleScan)
+            clearInterval(interval)
         }
-    })
-
-
+    }, [outPlayers,tick])
     return (
         <Container>
             {outPlayers.map(player => {
-                return <CountDownTimer name={player.name} key={player.name} avatar={player.avatar} completed={80}></CountDownTimer>
+                return <CountDownTimer name={player.name} key={player.name} avatar={player.avatar} completed={player.remainingTime / 120 * 100}></CountDownTimer>
             })}
         </Container>
     );
