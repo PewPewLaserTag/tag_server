@@ -38,8 +38,7 @@ class Players:
 
     def playerByName(self,name):
         """Find a player by their name """
-        p = self.players.search(self.Q.name == name)
-        print(p)
+        p = self.players.search(self.Q.name == name['name'])
         if len(p) > 0:
             return p[0]
         else: 
