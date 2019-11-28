@@ -24,6 +24,11 @@ def index():
     """Displays the index page"""
     return flask.redirect('/index.html', code=302)
 
+# @APP.route("/index.html")
+# def getHome():
+#     """Home page"""
+#     return flask.send_file("build/index.html")
+
 @APP.route("/images/<path:path>")
 def images(path):
     return flask.send_from_directory("build/images", path)
