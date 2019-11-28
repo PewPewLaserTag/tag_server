@@ -20,6 +20,7 @@ var Store = require('./components/datastores/dataStore')
 
 
 function App() {
+
   return (
     <Store.Container>
       <Router>

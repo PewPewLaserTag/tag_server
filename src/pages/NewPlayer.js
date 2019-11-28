@@ -10,7 +10,7 @@ import IconAttribution from '../components/IconAttribution';
 var Store = require('../components/datastores/dataStore')
 
 var io = require('socket.io-client')
-var socket = io('http://localhost:5000');
+var socket = io(document.location.hostname+':5000');
 
 const useStyles = makeStyles(theme => ({
     container: {

@@ -20,28 +20,28 @@ class Players:
                 print(newPlayer)
                 self.players.insert(newPlayer)
             return self.allPlayers()
-    
+
     def removePlayer(self, playerName):
         """Remove a player from the Database"""
         if "name" in playerName.keys():
             player = self.playerByName(playerName)
             print(player)
             self.players.remove(self.Q.name == player['name'])
-            
+
     def playerByTag(self, tag):
         """Find a player by their Blaster Tag"""
         p = self.players.search(self.Q.tag == tag)
         if len(p) > 0:
             return p[0]
-        else: 
+        else:
             raise PlayerDoesNotExistsError(tag)
 
-    def playerByName(self,name):
+    def playerByName(self, name):
         """Find a player by their name """
         p = self.players.search(self.Q.name == name['name'])
         if len(p) > 0:
             return p[0]
-        else: 
+        else:
             raise PlayerDoesNotExistsError(name)
 
     def allPlayers(self):
@@ -60,6 +60,7 @@ class PlayerExistsError(Exception):
         Exception.__init__(self, player)
         self.player = player
         self.message = f"Player:{player['name']} already in system"
+
 
 class PlayerDoesNotExistsError(Exception):
     def __init__(self, player):

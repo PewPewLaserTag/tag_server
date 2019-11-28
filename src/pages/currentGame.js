@@ -3,8 +3,7 @@ import CountDownTimer from '../components/CountDownTimer.js';
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container';
 var Store = require("../components/datastores/dataStore")
-var io = require('socket.io-client')
-var socket = io('http://localhost:5000');
+
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -19,6 +18,7 @@ const useStyles = makeStyles(theme => ({
 function CurrentGame(props) {
     const classes = useStyles()
     const store = Store.useStore()
+    const socket = store.get('socket')
 
     //Using tick to trigger a render update
     const [tick, setTick] = useState(0)

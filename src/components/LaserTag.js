@@ -14,26 +14,26 @@ import Container from '@material-ui/core/Container';
 import CurrentGame from '../pages/currentGame.js';
 import NewPlayerForm from '../pages/NewPlayer.js';
 import Players from '../pages/Players.js';
-
-var io = require('socket.io-client')
-var socket = io('http://localhost:5000');
-socket.emit('getPlayers',{})
+import NewGame from '../pages/newGame.js';
 
 var Store = require('./datastores/dataStore')
 
 const useStyles = makeStyles({});
 
-
-export default function Headeer() {
+function Header(props) {
     const classes = useStyles();
     const store = Store.useStore()
+    const socket = store.get('socket')
+ 
+
     const updatePlayers = (serverPlayers) =>{
         console.log("server Players", serverPlayers)
         var setPlayers = store.set('players')
         setPlayers(serverPlayers)
     }
-
+    
     useEffect(()=>{
+        console.log("Laser Tag Mount")
         socket.on('updatePlayers',updatePlayers)
         return ()=>{
             socket.removeEventListener('updatePlayers',updatePlayers)
@@ -56,7 +56,7 @@ export default function Headeer() {
                         <CurrentGame />
                     </Route>
                     <Route path="/newgame">
-                        <div>Create New Game Here</div>
+                        <NewGame />
                     </Route>
                     <Route path="/newplayer">
                         <NewPlayerForm />
@@ -72,3 +72,5 @@ export default function Headeer() {
         </div>
     )
 }
+
+export default Store.withStore  (Header)
