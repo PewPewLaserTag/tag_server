@@ -25,7 +25,7 @@ function CurrentGame(props) {
     const players = store.get('players')
     const [outPlayers, setOutPlayers] = useState([])
     const handleScan = (scan) => {
-        scan['remainingTime'] = 120
+        scan['remainingTime'] = 45
         scan['done'] = false
         outPlayers.push(scan)
         setOutPlayers(Array.from(outPlayers))
