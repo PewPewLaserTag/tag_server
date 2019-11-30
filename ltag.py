@@ -4,7 +4,7 @@ from time import sleep
 import logging
 from tinydb import TinyDB, Query
 
-from PlayerManager import Players, PlayerDoesNotExistsError
+from PlayerManager import Players, PlayerDoesNotExistsError, PlayerExistsError
 
 import eventlet
 eventlet.monkey_patch()
@@ -59,11 +59,26 @@ def handle_getPlayers(json):
 
 @socketio.on('newPlayer')
 def handle_json(json):
-    print('received newPlayer: ', json)
-    p.newPlayer(json)
-    emit('updatePlayers', p.allPlayers(), broadcast=True)
+    try:
+        print('received newPlayer: ', json)
+        player = p.newPlayer(json)
+        event = {
+            "type":"success",
+            "player":player,
+            "message":"Player Added"
+        }
+        
+        emit("newPlayerAdded", event)
+        emit('updatePlayers', p.allPlayers(), broadcast=True)
+    except PlayerExistsError:
+        event = {
+            "type":"error",
+            "message":"That Player Already Exists"
+        }
+        emit("newPlayerError", event)
     #TODO handle the errors
-    
+
+
 @socketio.on('removePlayer')
 def removePlayer(player):    
     print(player)
@@ -104,5 +119,5 @@ def startGame(status):
     print("stopGame Called")
 
 if __name__ == '__main__':
-    # APP.debug=True
+    APP.debug=True
     socketio.run(APP, host="0.0.0.0", port="5000")

@@ -1,0 +1,7 @@
+node_modules
+db.json
+.vscode
+.git
+*.md
+
+package*json

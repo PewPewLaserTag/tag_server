@@ -27,13 +27,11 @@ function Header(props) {
  
 
     const updatePlayers = (serverPlayers) =>{
-        console.log("server Players", serverPlayers)
         var setPlayers = store.set('players')
         setPlayers(serverPlayers)
     }
     
     useEffect(()=>{
-        console.log("Laser Tag Mount")
         socket.on('updatePlayers',updatePlayers)
         return ()=>{
             socket.removeEventListener('updatePlayers',updatePlayers)

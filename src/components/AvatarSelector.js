@@ -67,32 +67,31 @@ const icons = [
 export default function AvatarSelector(props) {
     const classes = useStyles()
     const icon_list = []
-    const [selected, setSelected] = useState(0)
     const onClick = (filename) => {
-        setSelected(filename)
         props.onChange(filename)
     }
     for (const [index, value] of icons.entries()) {
         let url = "/images/heros/" + value
 
-        if (value == selected)
+        if (value == props.value)
             icon_list.push(
                 <Badge
                     className={classes.root}
                     badgeContent={5} color="primary"
                     overlap="circle"
+                    key={index}
                     variant="dot"
                     anchorOrigin={{
                         vertical: "bottom",
                         horizontal: "right"
                     }} classes={classes}>
-                    <img src={url} className={classes.laser_avatar} key={index} width="80px" />
+                    <img src={url} className={classes.laser_avatar}  width="80px" />
                 </Badge>)
         else
             icon_list.push(<img src={url} className={classes.laser_avatar} key={index} width="80px" onClick={() => onClick(value)} />)
     }
     return (
-        <Box>
+        <Box key="box1">
             {icon_list}
         </Box>
     );

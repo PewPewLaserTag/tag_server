@@ -3,14 +3,13 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { Typography } from '@material-ui/core';
+import { Typography, Snackbar } from '@material-ui/core';
 import AvatarSelector from '../components/AvatarSelector';
 import IconAttribution from '../components/IconAttribution';
+import Notification from '../components/Notification';
 
 var Store = require('../components/datastores/dataStore')
 
-var io = require('socket.io-client')
-var socket = io(document.location.hostname+':5000');
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -25,30 +24,68 @@ const useStyles = makeStyles(theme => ({
 function NewPlayerForm() {
     const classes = useStyles()
     const store = Store.useStore()
+    const socket = store.get('socket')
     const [selectedAvatar, setSelectedAvatar] = useState(0)
     const [name, setName] = useState("")
     const [tag, setTag] = useState("")
+    const [notifyOpen, setNotifyOpen] = useState(false)
+    const [message, setMessage] = useState("")
+    const [notify, setNotify] = useState()
     const getAvatar = (avatar) => {
         setSelectedAvatar(avatar)
     }
+
     const handleNameChange = (e) => setName(e.target.value)
     const handleTagChange = (e) => setTag(e.target.value)
     const handleSave = (e) => {
-        console.log("Click", "Removing Player")
-        store.set('newPlayer')({"name":name, "avatar":selectedAvatar, "tag":tag})
+        store.set('newPlayer')({ "name": name, "avatar": selectedAvatar, "tag": tag })
+
     }
+
     const handleScan = (scan) => {
         setTag(scan['id'])
     }
-    
-    useEffect(()=>{
-        socket.on('newScan',handleScan)
-        return ()=>{
-            socket.removeEventListener('newScan',handleScan)
+
+    const handlePlayerAdded = (serverEvent) => {
+        console.log("serverEvent", serverEvent)
+        if(serverEvent.type == "success"){
+            setMessage(serverEvent.message)
+            setNotify(<Notification variant="success" message={serverEvent.message}></Notification>)
+            setNotifyOpen(true)
+            setName("")
+            setTag("")
+            setSelectedAvatar("")
+        }
+        else if (serverEvent.type == "error"){
+            setNotify(<Notification variant="error" message={serverEvent.message}></Notification>)
+            setNotifyOpen(true)
+        }
+        else{
+            setNotify(<Notification variant="error" message="Well, that didn't work. Not sure why"></Notification>)
+            setNotifyOpen(true)
+        }
+        
+    }
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setNotifyOpen(false)
+    }
+
+    useEffect(() => {
+        socket.on('newScan', handleScan)
+        socket.on('newPlayerAdded', handlePlayerAdded)
+        socket.on('newPlayerError', handlePlayerAdded)
+        return () => {
+            socket.removeEventListener('newScan', handleScan)
+            socket.removeEventListener('newPlayerAdded', handlePlayerAdded)
+            socket.removeEventListener('newPlayerError', handlePlayerAdded)
         }
     })
 
-    console.log(name)
+
     return (
         <Container align="left">
             <form className={classes.contianer} noValidate autoComplete="off">
@@ -64,8 +101,8 @@ function NewPlayerForm() {
                     />
                 </div>
                 <div>
-                    <AvatarSelector onChange={getAvatar} />
-                   <IconAttribution/>
+                    <AvatarSelector onChange={getAvatar} value={selectedAvatar} />
+                    <IconAttribution />
                 </div>
                 <div>
                     <TextField
@@ -84,6 +121,18 @@ function NewPlayerForm() {
                 </Button>
 
             </form>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                }}
+                open={notifyOpen}
+                autoHideDuration={6000}
+                onClose={handleClose}
+            >
+                {notify}
+            </Snackbar>
+
         </Container>
     );
 }

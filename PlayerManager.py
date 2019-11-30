@@ -17,7 +17,6 @@ class Players:
                     "avatar": str(player['avatar']),
                     "tag": str(player['tag'])
                 }
-                print(newPlayer)
                 self.players.insert(newPlayer)
             return self.allPlayers()
 
@@ -25,7 +24,6 @@ class Players:
         """Remove a player from the Database"""
         if "name" in playerName.keys():
             player = self.playerByName(playerName)
-            print(player)
             self.players.remove(self.Q.name == player['name'])
 
     def playerByTag(self, tag):
